@@ -43,7 +43,7 @@ def main():
     criterion = nn.CrossEntropyLoss()
 
     # 加载数据
-    dataset = TextDataset([r'D:\work\utf8_char_llm\data\arithmetic_training_data.jsonl'], tokenizer, config.max_seq_len)
+    dataset = TextDataset([r'data/arithmetic_training_data.jsonl'], tokenizer, config.max_seq_len)
     dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 
     # 训练循环

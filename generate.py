@@ -4,7 +4,7 @@ from config import ModelConfig
 from tokenizer import UTF8Tokenizer
 
 
-def generate_text(model, tokenizer, prompt, max_length=100, temperature=0.7, top_k=0, top_p=0.9):
+def generate_text(model, tokenizer, prompt, max_seq_len=100, temperature=0.7, top_k=0, top_p=0.9):
     model.eval()
     device = next(model.parameters()).device
 
@@ -13,7 +13,7 @@ def generate_text(model, tokenizer, prompt, max_length=100, temperature=0.7, top
 
     generated = []
     with torch.no_grad():
-        for _ in range(max_length):
+        for _ in range(max_seq_len):
             outputs, _ = model(input_ids)
             next_token_logits = outputs[:, -1, :] / temperature
 
@@ -63,7 +63,7 @@ def main():
 
     # 生成文本
     prompt = "从前有座山，"
-    generated_text = generate_text(model, tokenizer, prompt, max_length=100, temperature=0.7)
+    generated_text = generate_text(model, tokenizer, prompt, max_seq_len=100, temperature=0.7)
 
     print(f"Prompt: {prompt}")
     print(f"Generated text: {generated_text}")

@@ -9,7 +9,7 @@ class ModelConfig:
     nhead: int = 8
     num_layers: int = 6
     dim_feedforward: int = 2048
-    max_seq_len: int = 1024
+    max_seq_len: int = 256
     dropout: float = 0.1
 
     def __post_init__(self):

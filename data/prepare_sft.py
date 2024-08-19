@@ -3,10 +3,10 @@ from torch.utils.data import Dataset
 
 
 class SFTDataset(Dataset):
-    def __init__(self, data, tokenizer, max_length):
+    def __init__(self, data, tokenizer, max_seq_len):
         self.tokenizer = tokenizer
         self.data = data
-        self.max_length = max_length
+        self.max_seq_len = max_seq_len
 
     def __len__(self):
         return len(self.data)
@@ -17,7 +17,7 @@ class SFTDataset(Dataset):
         answer = item['answer']
 
         # 将 prompt 和 answer 编码并连接
-        input_ids = self.tokenizer.encode(prompt + answer, truncation=True, max_length=self.max_length)
+        input_ids = self.tokenizer.encode(prompt + answer, truncation=True, max_seq_len=self.max_seq_len)
 
         # 创建 attention mask
         attention_mask = [1] * len(input_ids)

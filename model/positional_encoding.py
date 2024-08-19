@@ -3,9 +3,11 @@ import math
 import torch
 from torch import nn
 
+import config
+
 
 class PositionalEncoding(nn.Module):
-    def __init__(self, d_model, max_len=5000):
+    def __init__(self, d_model, max_len=4096):
         super(PositionalEncoding, self).__init__()
         self.max_len = max_len
         pe = torch.zeros(max_len, d_model)
@@ -17,7 +19,39 @@ class PositionalEncoding(nn.Module):
         self.register_buffer('pe', pe)
 
     def forward(self, x):
-        seq_len = x.size(1)  # 使用第二个维度作为序列长度
-        if seq_len > self.max_len:
-            raise ValueError(f"Input sequence length ({seq_len}) exceeds maximum length ({self.max_len})")
-        return x + self.pe[:, :seq_len, :]  # 使用广播机制
+        max_seq_len = x.size(1)
+        if max_seq_len > self.max_len:
+            raise ValueError(f"Input sequence length ({max_seq_len}) exceeds maximum length ({self.max_len})")
+
+        print(f"x shape: {x.shape}, pe shape: {self.pe.shape}, max_seq_len: {max_seq_len}")
+        print(f"x dtype: {x.dtype}, pe dtype: {self.pe.dtype}")
+        print(f"x device: {x.device}, pe device: {self.pe.device}")
+        # 打印 x 的统计信息
+        # 将 x 移到 CPU 并分离计算图
+        x_cpu = x.detach().cpu()
+
+        try:
+            print(f"x statistics:")
+            print(f"  Min: {x_cpu.min().item()}")
+            print(f"  Max: {x_cpu.max().item()}")
+            print(f"  Mean: {x_cpu.mean().item()}")
+            print(f"  Std: {x_cpu.std().item()}")
+        except Exception as e:
+            print(f"Error calculating statistics: {e}")
+
+        # 检查是否有 NaN 或 Inf 值
+        try:
+            nan_count = torch.isnan(x_cpu).sum().item()
+            inf_count = torch.isinf(x_cpu).sum().item()
+            print(f"NaN count: {nan_count}, Inf count: {inf_count}")
+        except Exception as e:
+            print(f"Error checking for NaN/Inf: {e}")
+
+        # 打印 x 的一小部分样本
+        try:
+            print("Sample of x (first 3 batches, first 5 sequence elements, first 5 features):")
+            print(x_cpu[:3, :5, :5])
+        except Exception as e:
+            print(f"Error printing sample: {e}")
+
+        return x + self.pe[:, :max_seq_len, :]

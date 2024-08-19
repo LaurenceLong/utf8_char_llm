@@ -22,8 +22,8 @@ def process_file(file_path, tokenizer, output_path):
 
 
 class TextDataset(Dataset):
-    def __init__(self, data_paths, tokenizer, seq_len, cache_dir='.cache', use_memmap=True):
-        self.seq_len = seq_len
+    def __init__(self, data_paths, tokenizer, max_seq_len, cache_dir='.cache', use_memmap=True):
+        self.max_seq_len = max_seq_len
         self.tokenizer = tokenizer
         self.use_memmap = use_memmap
 
@@ -51,17 +51,17 @@ class TextDataset(Dataset):
         self.total_length = sum(self.data_lengths)
 
     def __len__(self):
-        return self.total_length - self.seq_len * len(self.data)
+        return self.total_length - self.max_seq_len * len(self.data)
 
     def __getitem__(self, idx):
         # Find which file the index belongs to
         for i, length in enumerate(self.data_lengths):
-            if idx < length - self.seq_len:
+            if idx < length - self.max_seq_len:
                 data = self.data[i]
                 break
-            idx -= (length - self.seq_len)
+            idx -= (length - self.max_seq_len)
 
-        chunk = data[idx:idx + self.seq_len + 1]
+        chunk = data[idx:idx + self.max_seq_len + 1]
         x = torch.tensor(chunk[:-1], dtype=torch.long)
         y = torch.tensor(chunk[1:], dtype=torch.long)
         return x, y

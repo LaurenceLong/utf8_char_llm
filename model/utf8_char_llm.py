@@ -29,7 +29,7 @@ class UTF8CharLLM(nn.Module):
         logits = self.output_layer(x)
         return logits, attention_info
 
-    def generate(self, prompt, max_length, temperature=1.0, top_k=0, top_p=0.9):
+    def generate(self, prompt, max_seq_len, temperature=1.0, top_k=0, top_p=0.9):
         self.eval()  # 将模型设置为评估模式
         device = next(self.parameters()).device  # 获取模型所在的设备
 
@@ -38,7 +38,7 @@ class UTF8CharLLM(nn.Module):
         input_ids = torch.tensor(input_ids, dtype=torch.long, device=device).unsqueeze(0)
 
         generated = []
-        for _ in range(max_length):
+        for _ in range(max_seq_len):
             # 准备输入
             if len(input_ids[0]) > self.max_seq_len:
                 input_ids = input_ids[:, -self.max_seq_len:]
@@ -79,7 +79,7 @@ class UTF8CharLLM(nn.Module):
         generated_text = self.tokenizer.decode(generated)
         return generated_text
 
-    def greedy_search(self, prompt, max_length):
+    def greedy_search(self, prompt, max_seq_len):
         self.eval()
         device = next(self.parameters()).device
 
@@ -87,7 +87,7 @@ class UTF8CharLLM(nn.Module):
         input_ids = torch.tensor(input_ids, dtype=torch.long, device=device).unsqueeze(0)
 
         generated = []
-        for _ in range(max_length):
+        for _ in range(max_seq_len):
             if len(input_ids[0]) > self.max_seq_len:
                 input_ids = input_ids[:, -self.max_seq_len:]
 
