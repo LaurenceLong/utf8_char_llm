@@ -18,7 +18,6 @@ class UTF8CharLLM(nn.Module):
         self.output_layer = OutputLayer(d_model, vocab_size)
 
     def forward(self, x):
-        # x = self.tokenizer.encode(x)  # data processed
         x = self.embedding(x)
 
         attention_info = []

@@ -28,22 +28,23 @@ def train(model, dataloader, optimizer, criterion, device):
 def main():
     # 设置设备
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = "cpu"
 
     # 设置配置
-    config = ModelConfig(vocab_size=256, d_model=512, nhead=8, num_layers=6, dim_feedforward=2048)
+    cfg = ModelConfig(vocab_size=256, d_model=512, nhead=8, num_layers=6, dim_feedforward=2048)
 
     # 创建tokenizer
-    tokenizer = UTF8Tokenizer(config.vocab_size)
+    tokenizer = UTF8Tokenizer(cfg.vocab_size)
 
     # 创建模型
-    model = UTF8CharLLM(**config.to_dict()).to(device)
+    model = UTF8CharLLM(**cfg.to_dict()).to(device)
 
     # 设置优化器和损失函数
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     criterion = nn.CrossEntropyLoss()
 
     # 加载数据
-    dataset = TextDataset([r'data/arithmetic_training_data.jsonl'], tokenizer, config.max_seq_len)
+    dataset = TextDataset([r'data/arithmetic_training_data.jsonl'], tokenizer, cfg.max_seq_len)
     dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 
     # 训练循环

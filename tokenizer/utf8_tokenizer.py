@@ -1,10 +1,10 @@
 # coding=utf-8
-DEFAULT_VOCAB_SIZE = 983040  # 983040 是 U+F0000 的十进制值
+DEFAULT_VOCAB_SIZE = 1114112  # utf-8潜在的最多码点
 
 
 class UTF8Tokenizer:
     def __init__(self, vocab_size=DEFAULT_VOCAB_SIZE):
-        self.vocab_size = min(vocab_size, DEFAULT_VOCAB_SIZE)
+        self.vocab_size = max(vocab_size, DEFAULT_VOCAB_SIZE)
         special_tokens = {'<PAD>': 0, '<BOS>': 1, '<EOS>': 2, '<UNK>': 3}
         self.special_tokens = {k: v + self.vocab_size for k, v in special_tokens.items()}
         self.char_to_id = {chr(i): i + len(self.special_tokens) for i in

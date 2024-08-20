@@ -1,12 +1,12 @@
 import torch.nn as nn
 
-from .attention import DynamicHierarchicalAttention
+from .attention import DynamicConvolutionalBlockedAttention
 
 
 class DecoderLayer(nn.Module):
     def __init__(self, d_model, nhead, dim_feedforward, dropout=0.1):
         super(DecoderLayer, self).__init__()
-        self.self_attn = DynamicHierarchicalAttention(d_model, nhead, dropout)
+        self.self_attn = DynamicConvolutionalBlockedAttention(d_model, nhead, dropout)
         self.feed_forward = nn.Sequential(
             nn.Linear(d_model, dim_feedforward),
             nn.SiLU(),
